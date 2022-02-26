@@ -11,6 +11,9 @@ class LocatorTest extends TestCase
         $location = $locator->locate('8.8.8.8');
 
         self::assertNotNull($location);
+        self::assertEquals('United States', $location->getCountry());
+        self::assertEquals('Louisiana', $location->getRegion());
+        self::assertEquals('Monroe', $location->getCity());
     }
 
     public function testNotFound(): void
