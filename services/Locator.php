@@ -4,6 +4,15 @@ namespace Services;
 
 class Locator
 {
+    private HttpClient $client;
+    private string $apiKey;
+
+    public function __construct(HttpClient $client, string $apiKey)
+    {
+        $this->client = $client;
+        $this->apiKey = $apiKey;
+    }
+
     public function locate(Ip $ip): ?Location
     {
         if ($ip->getValue() == '127.0.0.1') {
@@ -11,13 +20,12 @@ class Locator
         }
 
         $url = 'https://api.ipgeolocation.io/ipgeo?' . http_build_query([
-                'apiKey' => '5577bc01761641499ca8cf32762a4cc1',
+                'apiKey' => $this->apiKey,
                 'ip' => $ip->getValue(),
             ]);
 
-        $response = file_get_contents($url);
+        $response = $this->client->get($url);
         $data = json_decode($response, true);
-
         $data = array_map(function ($value) {
             return $value !== '-' ? $value : null;
         }, $data);
