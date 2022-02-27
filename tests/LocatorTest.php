@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Services\HttpClient;
 use Services\Ip;
-use Services\Locator;
+use Services\IpGeoLocationLocator;
 
 class LocatorTest extends TestCase
 {
@@ -17,7 +17,7 @@ class LocatorTest extends TestCase
             'city' => 'Monroe',
         ]));
 
-        $locator = new Locator($client, 'apiKey');
+        $locator = new IpGeoLocationLocator($client, 'apiKey');
         $location = $locator->locate(new Ip('8.8.8.8'));
 
         self::assertNotNull($location);
@@ -36,7 +36,7 @@ class LocatorTest extends TestCase
             'city' => '-',
         ]));
 
-        $locator = new Locator($client, 'apiKey');
+        $locator = new IpGeoLocationLocator($client, 'apiKey');
         $location = $locator->locate(new Ip('127.0.0.1'));
 
         self::assertNull($location);

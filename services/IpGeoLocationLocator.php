@@ -2,7 +2,7 @@
 
 namespace Services;
 
-class Locator
+class IpGeoLocationLocator
 {
     private HttpClient $client;
     private string $apiKey;
