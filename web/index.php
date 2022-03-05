@@ -13,13 +13,22 @@ $fakeLocator2b = new \Services\FakeLocator2b();
 $fakeLocator3 = new \Services\FakeLocator3();
 $fakeLocator3b = new \Services\FakeLocator3b();
 
-$chainLocator = new \Services\ChainLocator(
-    new \Services\MuteLocator($ipInfo, $handler),
-    new \Services\MuteLocator($ipGeo, $handler),
-    $fakeLocator1, $fakeLocator1b, $fakeLocator2, $fakeLocator2b
+$cache = new \Services\Cache();
+
+// todo: Отрефакторить - в данном виде кеширует тот результат,
+// который вернулся тем сервисом, который в первый раз был доступен. Т.е. мы, например, хотим, чтобы
+// первый по списку сервис был приоритетным, но в момент кеширования он может быть недоступен
+$locator = new \Services\CacheLocator(
+    new \Services\ChainLocator(
+        new \Services\MuteLocator($ipInfo, $handler),
+        new \Services\MuteLocator($ipGeo, $handler),
+        $fakeLocator1, $fakeLocator1b, $fakeLocator2, $fakeLocator2b
+    ),
+    $cache,
+    3600
 );
 
-$location = $chainLocator->locate(new \Services\Ip('176.97.160.1'));
+$location = $locator->locate(new \Services\Ip('176.97.160.1'));
 
 echo "<pre>";
 var_dump($location);
