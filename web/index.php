@@ -15,17 +15,21 @@ $fakeLocator3b = new \Services\FakeLocator3b();
 
 $cache = new \Services\Cache();
 
-// todo: Отрефакторить - в данном виде кеширует тот результат,
+// В прежнем виде кешировал тот результат,
 // который вернулся тем сервисом, который в первый раз был доступен. Т.е. мы, например, хотим, чтобы
-// первый по списку сервис был приоритетным, но в момент кеширования он может быть недоступен
-$locator = new \Services\CacheLocator(
-    new \Services\ChainLocator(
+// первый по списку сервис был приоритетным, но в момент кеширования он может быть недоступен. Поэтому
+// мы обернули всё ChainLocator'ом вместо CacheLocator'а
+$locator = new \Services\ChainLocator(
+    new \Services\CacheLocator(
         new \Services\MuteLocator($ipInfo, $handler),
-        new \Services\MuteLocator($ipGeo, $handler),
-        $fakeLocator1, $fakeLocator1b, $fakeLocator2, $fakeLocator2b
+        $cache,
+        3600
     ),
-    $cache,
-    3600
+    new \Services\CacheLocator(
+        new \Services\MuteLocator($ipGeo, $handler),
+        $cache,
+        3600
+    ),
 );
 
 $location = $locator->locate(new \Services\Ip('176.97.160.1'));
