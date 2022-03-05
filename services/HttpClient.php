@@ -8,7 +8,11 @@ class HttpClient
     {
         $response = @file_get_contents($url);
         if ($response === false) {
-            throw new \RuntimeException(error_get_last());
+            $lastError = error_get_last();
+            if (!empty($lastError)) {
+                throw new \RuntimeException($lastError['message']);
+            }
+            throw new \RuntimeException('Неизвестная ошибка');
         }
         return $response;
     }
