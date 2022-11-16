@@ -44,3 +44,6 @@ phpunit.phar
 /bower_components
 /dockerfiles backup
 /systemHelpers
+
+# Redis, DBs etc. data
+/data

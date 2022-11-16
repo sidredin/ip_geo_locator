@@ -1,5 +1,15 @@
 <?php
+
+use Services\Cache\RedisCache;
+
 require '../vendor/autoload.php';
+//phpinfo();
+
+$cache = new RedisCache();
+
+//var_dump($redis->hGetAll('man1'));
+
+//die(); // не удалять пока
 
 $client = new \Services\HttpClient();
 $handler = new \Services\ErrorHandler(new \Services\Logger());
@@ -13,7 +23,7 @@ $fakeLocator2b = new \Services\FakeLocator2b();
 $fakeLocator3 = new \Services\FakeLocator3();
 $fakeLocator3b = new \Services\FakeLocator3b();
 
-$cache = new \Services\Cache();
+$cache = new RedisCache();
 
 // В прежнем виде кешировал тот результат,
 // который вернулся тем сервисом, который в первый раз был доступен. Т.е. мы, например, хотим, чтобы
@@ -23,12 +33,14 @@ $locator = new \Services\ChainLocator(
     new \Services\CacheLocator(
         new \Services\MuteLocator($ipInfo, $handler),
         $cache,
-        3600
+        'cache_1',
+        30
     ),
     new \Services\CacheLocator(
         new \Services\MuteLocator($ipGeo, $handler),
         $cache,
-        3600
+        'cache_2',
+        30
     ),
 );
 

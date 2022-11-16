@@ -2,22 +2,26 @@
 
 namespace Services;
 
+use Services\Cache\CacheInterface;
+
 class CacheLocator implements Locator
 {
     private Locator $next;
-    private Cache $cache;
+    private CacheInterface $cache;
+    private string $cachePrefix;
     private int $ttl;
 
-    public function __construct(Locator $next, Cache $cache, int $ttl)
+    public function __construct(Locator $next, CacheInterface $cache, string $cachePrefix, int $ttl)
     {
         $this->next = $next;
         $this->cache = $cache;
+        $this->cachePrefix = $cachePrefix;
         $this->ttl = $ttl;
     }
 
     public function locate(Ip $ip): ?Location
     {
-        $key = 'location-' . $ip->getValue();
+        $key = $this->cachePrefix . '_location_' . $ip->getValue();
         $location = $this->cache->get($key);
 
         if ($location === null) {

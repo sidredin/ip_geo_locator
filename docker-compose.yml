@@ -15,6 +15,7 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - nginx
+      - redisinsight
     #            - db
     volumes:
       - .:/var/www/html:delegated
@@ -50,6 +51,8 @@ services:
     container_name: ip-geo-locator-redisinsight
     ports:
       - '8001:8001'
+    depends_on:
+      - redis
     networks:
       - ip-geo-locator
 
@@ -58,7 +61,7 @@ services:
 #        container_name: ip-geo-locator-db
 #        restart: unless-stopped
 #        volumes:
-#            - ./db/atlas_db:/var/lib/postgresql/data
+#            - ./db/ip_geo_locator_db:/var/lib/postgresql/data
 #        env_file: ./docker/envs/db.env
 #        command: postgres
 #        ports:

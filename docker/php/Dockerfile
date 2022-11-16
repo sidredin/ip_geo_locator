@@ -47,7 +47,9 @@ COPY ./docker/php/conf.d/error_reporting.ini /usr/local/etc/php/conf.d/error_rep
 
 # xdebug installation
 RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+    && pecl install redis \
+    && docker-php-ext-enable xdebug \
+    && docker-php-ext-enable redis
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
